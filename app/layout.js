@@ -1,61 +1,51 @@
-// "use client";
-
-import Nav from "@/components/navigation";
+import "@fontsource-variable/plus-jakarta-sans";
+import "@fontsource-variable/jetbrains-mono";
 import "./globals.css";
 
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import FinanceContextProvider from "@/lib/store/finance-context";
-import AuthContextProvider from "@/lib/store/auth-context";
-import { CurrencyProvider } from "@/lib/store/CurrencyContext";
+import Providers from "./providers";
+import { themeScript } from "@/lib/store/theme-context";
 
 export const metadata = {
-  title: "PennyTrack",
-  description: "Your financial tracking app",
+  metadataBase: new URL("https://pennytrack.tech"),
+  title: {
+    default: "PennyTrack: see where every cedi goes",
+    template: "%s · PennyTrack",
+  },
+  description:
+    "Track income and expenses in one calm place. Colour-coded categories, clear charts and one-tap PDF reports, in your currency.",
+  manifest: "/site.webmanifest",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "48x48" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
+    apple: "/apple-touch-icon.png",
+  },
+  openGraph: {
+    title: "PennyTrack",
+    description: "Every pesewa, accounted for. Track income and expenses in one calm place.",
+    url: "https://pennytrack.tech",
+    siteName: "PennyTrack",
+    images: [{ url: "/icon-512.png", width: 512, height: 512 }],
+    type: "website",
+  },
 };
 
 export const viewport = {
   width: "device-width",
-  initialScale: 1.0,
-  userScalable: false,
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#0E3B2E",
 };
+
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>{metadata.title}</title>
-        <meta name="description" content={metadata.description} />
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
-      <body className="flex flex-col min-h-screen">
-        <AuthContextProvider>
-          <FinanceContextProvider>
-            <CurrencyProvider>
-              <ToastContainer />
-              <Nav />
-              <main className="flex-grow">{children}</main>
-              <footer className="bg-slate-800 text-white text-center">
-                <div className="py-12">
-                  <p>
-                    &copy; {new Date().getFullYear()} PennyTrack. All rights
-                    reserved.
-                  </p>
-                  <p>
-                    Developed by{" "}
-                    <a
-                      href="https://www.linkedin.com/in/richmond-azadze"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-400 hover:text-blue-300 transition-colors"
-                    >
-                      Richmond Azadze
-                    </a>
-                  </p>
-                </div>
-              </footer>
-            </CurrencyProvider>
-          </FinanceContextProvider>
-        </AuthContextProvider>
+      <body>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
