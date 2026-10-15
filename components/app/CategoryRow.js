@@ -14,7 +14,7 @@ export default function CategoryRow({ category, max, onClick, whole }) {
       onClick={onClick}
       className="flex w-full items-center gap-4 rounded-md px-2 py-3 text-left transition hover:bg-sunken active:scale-[.99]"
     >
-      <CategoryTile color={category.color} />
+      <CategoryTile category={category} />
       <span className="min-w-0 flex-1">
         <span className="block truncate font-semibold capitalize">{category.title}</span>
         <span className="mt-2 block h-1.5 w-full overflow-hidden rounded-full bg-sunken">

@@ -28,6 +28,7 @@ import LegalSheet from "@/components/legal/LegalSheet";
 import { authContext } from "@/lib/store/auth-context";
 import { currencies } from "@/lib/store/currencies";
 import { CATEGORY_PRESETS } from "@/lib/finance";
+import { CategoryIcon } from "@/lib/category-icons";
 import {
   AddExpenseMock,
   CategoryList,
@@ -593,7 +594,7 @@ function HowItWorks() {
         <Reveal className="mt-16 flex flex-wrap justify-center gap-2.5">
           {CATEGORY_PRESETS.map((c) => (
             <span key={c.title} className="chip text-n-900" style={{ backgroundColor: `${c.color}22` }}>
-              <span className="h-2 w-2 rounded-full" style={{ backgroundColor: c.color }} />
+              <span style={{ color: c.color }}><CategoryIcon iconKey={c.icon} /></span>
               {c.title}
             </span>
           ))}

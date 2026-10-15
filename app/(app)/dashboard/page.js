@@ -70,7 +70,7 @@ function MobileBalanceCard({ balance, incomeTotal, expenseTotal }) {
       <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-lime/10 blur-2xl" />
       <div className="flex items-center justify-between">
         <span className="text-sm font-semibold text-lime">Total balance</span>
-        <CurrencySelect tone="onDark" className="h-8 pl-3 pr-8 text-xs" />
+        <CurrencySelect tone="onDark" size="sm" />
       </div>
       <AnimatedNumber value={balance} format={(v) => money(v)} className="figure mt-2 block text-[36px] font-bold leading-tight" />
       <div className="mt-4 grid grid-cols-2 gap-2.5">

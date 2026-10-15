@@ -7,17 +7,23 @@ import { LuPlus, LuTrash2 } from "react-icons/lu";
 import Sheet from "@/components/ui/Sheet";
 import { CategoryTile } from "@/components/ui/CategoryBadge";
 import EmptyState from "@/components/ui/EmptyState";
+import { iconKeyFor } from "@/lib/category-icons";
+import IconPicker from "./IconPicker";
 import { relativeDay, toDate } from "@/lib/finance";
 import { useMoney } from "@/lib/utlis";
 import { useFinance } from "./hooks";
 
 export default function CategorySheet({ categoryId, onClose, onAddExpense }) {
-  const { expenses, deleteExpenseItem, deleteExpenseCategory } = useFinance();
+  const { expenses, deleteExpenseItem, deleteExpenseCategory, updateCategory } = useFinance();
+  const [pickingIcon, setPickingIcon] = useState(false);
   const money = useMoney();
   const expense = expenses.find((e) => e.id === categoryId);
   const [confirming, setConfirming] = useState(false);
 
-  useEffect(() => setConfirming(false), [categoryId]);
+  useEffect(() => {
+    setConfirming(false);
+    setPickingIcon(false);
+  }, [categoryId]);
 
   // Keep the last category on screen while the sheet animates out.
   const [shown, setShown] = useState(expense);
@@ -34,6 +40,15 @@ export default function CategorySheet({ categoryId, onClose, onAddExpense }) {
     } catch (error) {
       console.log(error.message);
       toast.error(error.message);
+    }
+  };
+
+  const changeIcon = async (icon) => {
+    try {
+      await updateCategory(cat.id, { icon });
+      setPickingIcon(false);
+    } catch (error) {
+      toast.error(error.message || "Couldn't change the icon");
     }
   };
 
@@ -59,7 +74,7 @@ export default function CategorySheet({ categoryId, onClose, onAddExpense }) {
       title={
         cat && (
           <span className="flex items-center gap-3">
-            <CategoryTile color={cat.color} size="sm" />
+            <CategoryTile category={cat} size="sm" />
             <span className="capitalize">{cat.title}</span>
           </span>
         )
@@ -107,13 +122,37 @@ export default function CategorySheet({ categoryId, onClose, onAddExpense }) {
     >
       {cat && (
         <>
-          <div className="mb-5 rounded-lg bg-sunken p-5">
-            <span className="text-sm font-semibold text-muted">Total spent</span>
-            <div className="figure mt-1 text-[32px] font-bold leading-tight">{money(cat.total)}</div>
-            <span className="text-sm text-muted">
-              {items.length} {items.length === 1 ? "expense" : "expenses"}
-            </span>
+          <div className="mb-5 flex items-start gap-4 rounded-lg bg-sunken p-5">
+            <div className="min-w-0 flex-1">
+              <span className="text-sm font-semibold text-muted">Total spent</span>
+              <div className="figure mt-1 text-[32px] font-bold leading-tight">{money(cat.total)}</div>
+              <span className="text-sm text-muted">
+                {items.length} {items.length === 1 ? "expense" : "expenses"}
+              </span>
+            </div>
+            <button
+              onClick={() => setPickingIcon((v) => !v)}
+              className="flex flex-col items-center gap-1.5 text-xs font-semibold text-muted transition hover:text-fg"
+              aria-expanded={pickingIcon}
+            >
+              <CategoryTile category={cat} size="lg" />
+              Change icon
+            </button>
           </div>
+          <AnimatePresence initial={false}>
+            {pickingIcon && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className="overflow-hidden"
+              >
+                <div className="mb-5">
+                  <IconPicker value={iconKeyFor(cat)} color={cat.color} onChange={changeIcon} />
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
           <h3 className="mb-1 text-h3">History</h3>
           {items.length === 0 ? (
             <EmptyState title="Nothing here yet" body={`Add your first ${cat.title} expense.`} className="py-6" />

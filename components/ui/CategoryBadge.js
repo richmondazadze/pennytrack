@@ -1,18 +1,19 @@
-// Soft tile with the category's colour dot, used in rows and lists.
-export function CategoryTile({ color, size = "md" }) {
-  const box = size === "sm" ? "h-9 w-9" : "h-11 w-11";
-  const dot = size === "sm" ? "h-3 w-3" : "h-3.5 w-3.5";
+import { CategoryIcon } from "@/lib/category-icons";
+
+// Soft tile in the category's colour with its icon, used in rows, cards and sheets.
+export function CategoryTile({ category, color = category?.color, iconKey, size = "md" }) {
+  const box = size === "sm" ? "h-9 w-9 text-[17px]" : size === "lg" ? "h-14 w-14 text-2xl" : "h-11 w-11 text-xl";
   return (
     <span
       className={`inline-flex shrink-0 items-center justify-center rounded-md ${box}`}
-      style={{ backgroundColor: `${color}22` }}
+      style={{ backgroundColor: `${color}24`, color }}
     >
-      <span className={`rounded-full ${dot}`} style={{ backgroundColor: color }} />
+      <CategoryIcon category={category} iconKey={iconKey} className="drop-shadow-[0_0_0.5px_rgba(0,0,0,.25)]" />
     </span>
   );
 }
 
-export function CategoryChip({ title, color, selected, onClick }) {
+export function CategoryChip({ category, title = category?.title, color = category?.color, iconKey, selected, onClick }) {
   return (
     <button
       type="button"
@@ -23,10 +24,9 @@ export function CategoryChip({ title, color, selected, onClick }) {
       }`}
       style={selected ? undefined : { backgroundColor: `${color}22` }}
     >
-      <span
-        className={`h-2 w-2 rounded-full ${selected ? "bg-lime dark:bg-forest" : ""}`}
-        style={selected ? undefined : { backgroundColor: color }}
-      />
+      <span className={selected ? "text-lime dark:text-forest" : ""} style={selected ? undefined : { color }}>
+        <CategoryIcon category={category || { title }} iconKey={iconKey} className="text-[15px]" />
+      </span>
       {title}
     </button>
   );

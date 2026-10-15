@@ -1,6 +1,7 @@
 "use client";
 
-import { LuArrowDownLeft, LuArrowUpRight } from "react-icons/lu";
+import { LuArrowDownLeft } from "react-icons/lu";
+import { CategoryIcon } from "@/lib/category-icons";
 import { relativeDay } from "@/lib/finance";
 import { useMoney } from "@/lib/utlis";
 
@@ -22,7 +23,7 @@ export default function TransactionRow({ tx, onClick, showDate = true, trailing 
           color: income ? "#12B76A" : tx.color || "#7B8880",
         }}
       >
-        {income ? <LuArrowDownLeft className="text-lg" /> : <LuArrowUpRight className="text-lg" />}
+        {income ? <LuArrowDownLeft className="text-lg" /> : <CategoryIcon iconKey={tx.icon} className="text-lg" />}
       </span>
       <span className="min-w-0 flex-1">
         <span className="block truncate font-semibold capitalize leading-tight">{tx.title}</span>

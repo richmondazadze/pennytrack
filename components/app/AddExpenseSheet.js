@@ -36,7 +36,7 @@ export default function AddExpenseSheet({ open, onClose, initialCategoryId = nul
   // First-run shortcut: tapping a suggested category creates it and selects it.
   const createPreset = async (preset) => {
     try {
-      const id = await addCategory({ title: preset.title, color: preset.color, total: 0 });
+      const id = await addCategory({ title: preset.title, color: preset.color, icon: preset.icon, total: 0 });
       setSelectedCategory(id);
     } catch (error) {
       toast.error(error.message || "Failed to create category");
@@ -127,15 +127,14 @@ export default function AddExpenseSheet({ open, onClose, initialCategoryId = nul
                 {expenses.map((c) => (
                   <CategoryChip
                     key={c.id}
-                    title={c.title}
-                    color={c.color}
+                    category={c}
                     selected={c.id === selectedCategory}
                     onClick={() => setSelectedCategory(c.id)}
                   />
                 ))}
                 {expenses.length === 0 &&
                   CATEGORY_PRESETS.slice(0, 6).map((p) => (
-                    <CategoryChip key={p.title} title={p.title} color={p.color} onClick={() => createPreset(p)} />
+                    <CategoryChip key={p.title} category={p} onClick={() => createPreset(p)} />
                   ))}
                 <button
                   type="button"

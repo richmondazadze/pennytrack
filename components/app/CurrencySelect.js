@@ -5,17 +5,18 @@ import { useCurrency } from "@/lib/store/CurrencyContext";
 import { currencies } from "@/lib/store/currencies";
 import { currencySymbol } from "@/lib/utlis";
 
-export default function CurrencySelect({ className = "", tone = "default" }) {
+export default function CurrencySelect({ className = "", tone = "default", size = "md" }) {
   const { currency, setCurrency } = useCurrency();
   const styles =
     tone === "onDark"
       ? "bg-white/10 text-white hover:bg-white/15 border-transparent"
       : "border-line bg-surface text-fg hover:border-n-300 dark:hover:border-n-600";
+  const sizing = size === "sm" ? "h-8 pl-3.5 pr-9 text-xs" : "h-11 pl-4 pr-11 text-sm";
   return (
-    <label className={`relative inline-flex h-11 items-center rounded-full border pl-4 pr-9 text-sm font-bold transition ${styles} ${className}`}>
+    <label className={`relative inline-flex items-center rounded-full border font-bold transition ${sizing} ${styles} ${className}`}>
       <span className="sr-only">Display currency</span>
       {currency} {currencySymbol(currency) !== currency ? currencySymbol(currency) : ""}
-      <LuChevronDown className="pointer-events-none absolute right-3.5" />
+      <LuChevronDown className={`pointer-events-none absolute ${size === "sm" ? "right-3" : "right-4"}`} />
       <select
         value={currency}
         onChange={(e) => setCurrency(e.target.value)}

@@ -93,7 +93,7 @@ export default function ExpensesPage() {
                 className="card group p-5 text-left transition-shadow hover:shadow-overlay"
               >
                 <div className="flex items-center gap-3">
-                  <CategoryTile color={c.color} />
+                  <CategoryTile category={c} />
                   <div className="min-w-0 flex-1">
                     <div className="truncate font-semibold capitalize">{c.title}</div>
                     <div className="text-xs text-muted">

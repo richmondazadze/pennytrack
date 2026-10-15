@@ -3,8 +3,9 @@
 // Product previews for the landing page, drawn in HTML so they stay crisp and on-brand.
 // The figures are illustrative sample data from the design system.
 import { motion } from "framer-motion";
-import { LuArrowDownLeft, LuArrowUpRight, LuCheck, LuDownload, LuFileText } from "react-icons/lu";
+import { LuArrowDownLeft, LuCheck, LuDownload, LuFileText } from "react-icons/lu";
 import { AppIcon } from "@/components/brand/Logo";
+import { CategoryIcon } from "@/lib/category-icons";
 
 export const SAMPLE_CATEGORIES = [
   { title: "Food", color: "#A3D936", total: 1240, items: 12 },
@@ -19,8 +20,8 @@ export const SAMPLE_CATEGORIES = [
 
 const TX = [
   { title: "Salary", sub: "Income · 01 Oct", amount: "+₵4,500.00", income: true },
-  { title: "Melcom", sub: "Shopping · Yesterday", amount: "−₵180.00", color: "#A855F7" },
-  { title: "ECG prepaid", sub: "Bills · 12 Oct", amount: "−₵200.00", color: "#38BDF8" },
+  { title: "Melcom", sub: "Shopping · Yesterday", amount: "−₵180.00", color: "#A855F7", icon: "shopping" },
+  { title: "ECG prepaid", sub: "Bills · 12 Oct", amount: "−₵200.00", color: "#38BDF8", icon: "electricity" },
   { title: "Freelance", sub: "Income · 10 Oct", amount: "+₵1,200.00", income: true },
 ];
 
@@ -87,8 +88,8 @@ export function CategoryList({ count = 5, compact = false }) {
     <div className="divide-y divide-n-100">
       {SAMPLE_CATEGORIES.slice(0, count).map((c, i) => (
         <div key={c.title} className={`flex items-center gap-3 ${compact ? "py-2" : "py-2.5"}`}>
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px]" style={{ backgroundColor: `${c.color}22` }}>
-            <span className="h-3 w-3 rounded-full" style={{ backgroundColor: c.color }} />
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] text-[17px]" style={{ backgroundColor: `${c.color}24`, color: c.color }}>
+            <CategoryIcon category={c} />
           </span>
           <span className="min-w-0 flex-1">
             <span className="block text-[13px] font-semibold text-n-900">{c.title}</span>
@@ -113,7 +114,7 @@ export function TxList({ count = 4 }) {
             className="flex h-8 w-8 items-center justify-center rounded-full"
             style={{ backgroundColor: t.income ? "#12B76A1f" : `${t.color}24`, color: t.income ? "#12B76A" : t.color }}
           >
-            {t.income ? <LuArrowDownLeft /> : <LuArrowUpRight />}
+            {t.income ? <LuArrowDownLeft /> : <CategoryIcon iconKey={t.icon} />}
           </span>
           <span className="min-w-0 flex-1">
             <span className="block text-[13px] font-semibold text-n-900">{t.title}</span>
@@ -275,7 +276,7 @@ export function AddExpenseMock() {
             className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] font-semibold ${i === 1 ? "bg-forest text-white" : "text-n-900"}`}
             style={i === 1 ? undefined : { backgroundColor: `${c.color}22` }}
           >
-            <span className="h-2 w-2 rounded-full" style={{ backgroundColor: i === 1 ? "#C8F250" : c.color }} />
+            <span style={{ color: i === 1 ? "#C8F250" : c.color }}><CategoryIcon category={c} /></span>
             {c.title}
           </motion.span>
         ))}

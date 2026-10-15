@@ -4,19 +4,25 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import { LuCheck } from "react-icons/lu";
 import { useFinance } from "./hooks";
+import IconPicker from "./IconPicker";
+import { CategoryTile } from "@/components/ui/CategoryBadge";
 import { CATEGORY_PRESETS } from "@/lib/finance";
+import { guessIconKey } from "@/lib/category-icons";
 
 const SWATCHES = CATEGORY_PRESETS.map((p) => p.color);
 
-// Name + colour picker. Calls onCreated(id) after the category is saved.
+// Name, icon and colour. Calls onCreated(id) after the category is saved.
+// Deliberately not a <form>: it is also rendered inside the Add expense form,
+// and a nested form would submit the outer one and reload the page.
 export default function NewCategoryForm({ onCreated, onCancel, autoFocus = true }) {
   const { addCategory, expenses } = useFinance();
   const [title, setTitle] = useState("");
   const [color, setColor] = useState(SWATCHES[expenses.length % SWATCHES.length]);
+  const [icon, setIcon] = useState(null); // null = follow the name
   const [saving, setSaving] = useState(false);
+  const iconKey = icon || guessIconKey(title);
 
-  const submit = async (e) => {
-    e?.preventDefault();
+  const submit = async () => {
     const name = title.trim();
     if (!name) {
       toast.error("Category title is required");
@@ -24,9 +30,10 @@ export default function NewCategoryForm({ onCreated, onCancel, autoFocus = true 
     }
     setSaving(true);
     try {
-      const id = await addCategory({ title: name, color, total: 0 });
+      const id = await addCategory({ title: name, color, icon: iconKey, total: 0 });
       toast.success(`${name} created`);
       setTitle("");
+      setIcon(null);
       onCreated?.(id);
     } catch (error) {
       console.error("Error adding category:", error);
@@ -37,18 +44,31 @@ export default function NewCategoryForm({ onCreated, onCancel, autoFocus = true 
   };
 
   return (
-    <form onSubmit={submit} className="space-y-4">
+    <div className="space-y-5">
       <div>
         <label className="field-label" htmlFor="cat-title">Name</label>
-        <input
-          id="cat-title"
-          className="input"
-          placeholder="e.g. Groceries"
-          value={title}
-          autoFocus={autoFocus}
-          maxLength={40}
-          onChange={(e) => setTitle(e.target.value)}
-        />
+        <div className="flex items-center gap-3">
+          <CategoryTile color={color} iconKey={iconKey} />
+          <input
+            id="cat-title"
+            className="input"
+            placeholder="e.g. Groceries"
+            value={title}
+            autoFocus={autoFocus}
+            maxLength={40}
+            onChange={(e) => setTitle(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                submit();
+              }
+            }}
+          />
+        </div>
+      </div>
+      <div>
+        <span className="field-label">Icon</span>
+        <IconPicker value={iconKey} color={color} onChange={setIcon} />
       </div>
       <div>
         <span className="field-label">Colour</span>
@@ -82,7 +102,7 @@ export default function NewCategoryForm({ onCreated, onCancel, autoFocus = true 
         </div>
       </div>
       <div className="flex gap-3 pt-1">
-        <button type="submit" className="btn btn-primary flex-1" disabled={saving}>
+        <button type="button" onClick={submit} className="btn btn-primary flex-1" disabled={saving}>
           {saving ? "Saving…" : "Create category"}
         </button>
         {onCancel && (
@@ -91,6 +111,6 @@ export default function NewCategoryForm({ onCreated, onCancel, autoFocus = true 
           </button>
         )}
       </div>
-    </form>
+    </div>
   );
 }
