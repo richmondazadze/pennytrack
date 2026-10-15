@@ -2,89 +2,154 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Semantic tokens as RGB channels so Tailwind can apply opacity. */
 @layer base {
+  :root {
+    --canvas: 248 250 249; /* n25 */
+    --surface: 255 255 255; /* n0 */
+    --sunken: 241 244 242; /* n50 */
+    --line: 228 233 230; /* n100 */
+    --fg: 18 25 22; /* n900 */
+    --muted: 90 102 96; /* n500 */
+    --action: 14 59 46; /* forest */
+    --on-action: 255 255 255;
+    color-scheme: light;
+  }
+
+  .dark {
+    --canvas: 11 16 14; /* n950 */
+    --surface: 18 25 22; /* n900 */
+    --sunken: 29 38 34; /* n800 */
+    --line: 29 38 34; /* n800 */
+    --fg: 241 244 242; /* n50 */
+    --muted: 123 136 128; /* n400 */
+    --action: 200 242 80; /* lime */
+    --on-action: 14 59 46;
+    color-scheme: dark;
+  }
+
   html {
-    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
   }
+
   body {
-    @apply bg-slate-900 text-white relative;
+    @apply bg-canvas text-fg font-sans antialiased;
+    font-feature-settings: "ss01", "cv11";
   }
 
-  button {
-    @apply hover:scale-105 transition-all duration-100;
+  ::selection {
+    @apply bg-lime text-forest;
   }
 
-  input {
-    @apply px-4 py-2 bg-slate-600 rounded-xl;
+  :focus-visible {
+    @apply outline-none ring-2 ring-lime ring-offset-2 ring-offset-canvas;
+  }
+
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type="number"] {
+    -moz-appearance: textfield;
   }
 }
 
-@layer utilities {
+@layer components {
   .btn {
-    @apply px-4 py-2 text-sm capitalize  rounded-2xl;
+    @apply relative inline-flex select-none items-center justify-center gap-2 whitespace-nowrap rounded-full px-5 h-11 text-[15px] font-semibold transition duration-200 ease-out active:scale-[.97] disabled:pointer-events-none disabled:opacity-50;
   }
-
+  .btn-sm {
+    @apply h-9 px-4 text-sm;
+  }
+  .btn-lg {
+    @apply h-14 px-7 text-base;
+  }
   .btn-primary {
-    @apply bg-slate-700 border-slate-700 text-lime-400;
+    @apply bg-action text-on-action hover:brightness-110 hover:shadow-raised;
   }
-
-  .btn-report {
-    @apply bg-lime-500 border-lime-700 text-slate-900 font-bold;
+  .btn-forest {
+    @apply bg-forest text-white hover:bg-forest-600;
   }
-
-  .btn-primary-outline {
-    @apply border border-lime-400 text-lime-400;
+  .btn-lime {
+    @apply bg-lime text-forest hover:bg-lime-600 dark:bg-lime/15 dark:text-lime dark:hover:bg-lime/25;
   }
-
+  .btn-outline {
+    @apply border border-line bg-surface text-fg hover:border-n-300 dark:hover:border-n-600;
+  }
+  .btn-ghost {
+    @apply text-forest hover:bg-sunken dark:text-lime;
+  }
   .btn-danger {
-    @apply bg-red-600 border-red-600;
+    @apply bg-expense/10 text-expense hover:bg-expense/15;
+  }
+  .icon-btn {
+    @apply inline-flex h-10 w-10 items-center justify-center rounded-full text-muted transition hover:bg-sunken hover:text-fg active:scale-95;
   }
 
-  .input-group {
-    @apply flex flex-col gap-4;
+  .card {
+    @apply rounded-lg border border-line bg-surface;
   }
 
-  .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
+  .field-label {
+    @apply mb-1.5 block text-sm font-semibold text-fg;
+  }
+  .input {
+    @apply h-12 w-full rounded-md border border-line bg-surface px-4 text-base text-fg placeholder:text-n-400 transition md:text-[15px] focus:border-forest focus:outline-none focus:ring-4 focus:ring-forest/10 dark:focus:border-lime dark:focus:ring-lime/10;
   }
 
-  .modal-content {
-    background-color: #1e293b;
-    padding: 20px;
-    border-radius: 8px;
-    width: 80%;
-    max-width: 500px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  .chip {
+    @apply inline-flex h-9 items-center gap-2 rounded-full px-3.5 text-sm font-semibold transition active:scale-95;
   }
 
-  @media (max-width: 640px) {
-    .modal-content {
-      height: 75vh;
-      margin: 1rem;
-      width: 90%;
-    }
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-bold;
   }
 
-  .close-button {
-    margin-top: 20px;
-    background-color: rgb(86, 97, 109);
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
+  .eyebrow {
+    @apply text-xs font-semibold uppercase tracking-[.12em];
   }
 
-  .close-button:hover {
-    background-color: rgb(57, 63, 70);
+  /* List amounts: monospace so columns of money line up. */
+  .amount {
+    @apply font-mono tabular-nums tracking-tight;
+  }
+  /* Headline figures: the sans face with tabular numerals. */
+  .figure {
+    @apply font-sans tabular-nums tracking-[-0.02em];
+  }
+
+  .skeleton {
+    @apply rounded-md bg-gradient-to-r from-sunken via-line to-sunken bg-[length:200%_100%] animate-shimmer;
+  }
+}
+
+/* Toasts: dark pills from the design system. */
+.Toastify__toast-container {
+  --toastify-toast-width: auto;
+}
+.Toastify__toast {
+  @apply min-h-0 rounded-full bg-n-900 px-4 py-3 font-sans text-sm font-semibold text-white shadow-overlay;
+}
+.Toastify__toast-body {
+  @apply m-0 p-0;
+}
+.Toastify__toast-icon {
+  @apply w-5;
+}
+.Toastify__close-button {
+  @apply hidden;
+}
+.Toastify__progress-bar {
+  @apply hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
   }
 }
