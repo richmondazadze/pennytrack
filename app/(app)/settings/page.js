@@ -6,6 +6,7 @@ import PageHeader from "@/components/app/PageHeader";
 import { Avatar } from "@/components/app/UserMenu";
 import { useDownloadReport } from "@/components/app/hooks";
 import Segmented from "@/components/ui/Segmented";
+import Select from "@/components/ui/Select";
 import LegalSheet from "@/components/legal/LegalSheet";
 import { authContext } from "@/lib/store/auth-context";
 import { useCurrency } from "@/lib/store/CurrencyContext";
@@ -54,17 +55,18 @@ export default function SettingsPage() {
         <section className="card divide-y divide-line overflow-hidden">
           <h2 className="eyebrow px-5 pb-3 pt-5 text-muted md:px-6">Preferences</h2>
           <Row stack label="Currency" hint="Amounts are shown in this currency">
-            <select
+            <Select
               value={currency}
               onChange={(e) => setCurrency(e.target.value)}
-              className="input h-11 w-full rounded-full pr-8 text-sm font-bold sm:w-auto"
+              className="w-full sm:w-auto"
+              aria-label="Currency"
             >
               {currencies.map((c) => (
                 <option key={c.code} value={c.code}>
                   {c.code} · {c.name}
                 </option>
               ))}
-            </select>
+            </Select>
           </Row>
           <div className="flex flex-col gap-3 px-5 py-4 sm:flex-row sm:items-center md:px-6">
             <div className="flex-1">
